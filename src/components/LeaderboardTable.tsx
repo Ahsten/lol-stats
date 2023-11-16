@@ -12,17 +12,11 @@ interface Summoner {
 }
 
 type LeaderboardProps = {
-    data: {
-        tier: string,
-        leagueId: string,
-        queue: string,
-        name: string,
-        entries: Summoner[]
-    }
+    players: Summoner[],
+    tier: string
 }
 
-function LeaderboardTable({data}: LeaderboardProps){
-
+function LeaderboardTable({ players, tier }: LeaderboardProps){
     const skeletonArray = [];
     for(let x = 0; x < 100; x++){
         skeletonArray.push(
@@ -37,7 +31,7 @@ function LeaderboardTable({data}: LeaderboardProps){
         )
     }
 
-    if(data === undefined) {
+    if(players === undefined) {
         return <div className="w-[64rem]">
             <table className="table">
                 <thead>
@@ -69,11 +63,11 @@ function LeaderboardTable({data}: LeaderboardProps){
                     </tr>
                 </thead>
                 <tbody>
-                    {data.entries.map((summoner: any, index: number) => 
+                    {players.map((summoner: any, index: number) => 
                         <tr>
                             <th>{index + 1}</th>
                             <td>{summoner.summonerName}</td>
-                            <td>{data.tier}</td>
+                            <td>{tier}</td>
                             <td>{summoner.leaguePoints} LP </td>
                             <td>{summoner.wins}</td>
                             <td>{summoner.losses}</td>
