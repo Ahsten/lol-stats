@@ -1,11 +1,21 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import NavSearch from "../components/NavSearch";
-import Navbar from "../components/Navbar";
-import LeaderboardTable from "../components/LeaderboardTable";
+import type { GetStaticPaths } from "astro";
+import Layout from "../../layouts/Layout.astro";
+import NavSearch from "../../components/NavSearch";
+import Navbar from "../../components/Navbar";
+import LeaderboardTable from "../../components/LeaderboardTable";
+import Pagination from "../../components/Pagination"
 
-const response = await fetch('http://localhost:4321/challenger.json')
-const data = await response.json()
+export async function getStaticPaths({ paginate } : any){
+    const response = await fetch('http://localhost:4321/challenger.json')
+    const players = await response.json()
+    const tier = players.tier;
+
+    return paginate(players.entries, { props: { tier }, pageSize: 100})
+}
+
+const { page, tier } = Astro.props
+const { data: players } = page
 ---
 
 <Layout title="Leaderboards">
@@ -14,6 +24,7 @@ const data = await response.json()
         <Navbar />
     </header>
     <div class="grid place-content-center">
-        <LeaderboardTable data={data}/>
+        <LeaderboardTable players={ players } tier={tier}/>
+        <Pagination page={page}/>
     </div>
 </Layout>
